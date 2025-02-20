@@ -5,22 +5,44 @@ function generateSecurePassword(length = 12, options = {}) {
     includeUppercase = true,
     includeLowercase = true,
     includeNumbers = true,
-    includeSymbols = false, // Changed default to false
+    includeSymbols = false,
   } = options
 
-  let characterSet = ''
-  if (includeUppercase) characterSet += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-  if (includeLowercase) characterSet += 'abcdefghijklmnopqrstuvwxyz'
-  if (includeNumbers) characterSet += '0123456789'
-  if (includeSymbols) characterSet += '!@#$%^&*?=+-.'
+  const uppercaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+  const lowercaseChars = 'abcdefghijklmnopqrstuvwxyz'
+  const numberChars = '0123456789'
+  const symbolChars = '!@#$%^&*?=+-.'
 
+  let characterSet = ''
   let password = ''
-  for (let i = 0; i < length; i++) {
+  
+  // First, add one character from each required set
+  if (includeUppercase) {
+    characterSet += uppercaseChars
+    password += uppercaseChars[Math.floor(Math.random() * uppercaseChars.length)]
+  }
+  if (includeLowercase) {
+    characterSet += lowercaseChars
+    password += lowercaseChars[Math.floor(Math.random() * lowercaseChars.length)]
+  }
+  if (includeNumbers) {
+    characterSet += numberChars
+    password += numberChars[Math.floor(Math.random() * numberChars.length)]
+  }
+  if (includeSymbols) {
+    characterSet += symbolChars
+    password += symbolChars[Math.floor(Math.random() * symbolChars.length)]
+  }
+
+  // Fill the rest of the password length with random characters
+  const remainingLength = length - password.length
+  for (let i = 0; i < remainingLength; i++) {
     const randomIndex = Math.floor(Math.random() * characterSet.length)
     password += characterSet[randomIndex]
   }
 
-  return password
+  // Shuffle the password to avoid predictable character positions
+  return password.split('').sort(() => Math.random() - 0.5).join('')
 }
 
 // Parse command line arguments
